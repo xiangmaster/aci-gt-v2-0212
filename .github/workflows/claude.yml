@@ -40,8 +40,7 @@ jobs:
     - name: Checkout repository (fork-compatible)
       uses: actions/checkout@v6
       with:
-        repository: ${{ github.event.issue.pull_request && steps.pr-info.outputs.is_fork == 'true' && format('{0}/{1}', steps.pr-info.outputs.pr_head_owner, 
-          steps.pr-info.outputs.pr_head_repo) || github.repository }}
+        repository: ${{ github.event.issue.pull_request && steps.pr-info.outputs.is_fork == 'true' && format('{0}/{1}', steps.pr-info.outputs.pr_head_owner, steps.pr-info.outputs.pr_head_repo) || github.repository }}
         ref: ${{ github.event.issue.pull_request && steps.pr-info.outputs.pr_head_ref || github.ref }}
         fetch-depth: 0
 
@@ -49,9 +48,6 @@ jobs:
       id: claude
       uses: anthropics/claude-code-action@v1
       with:
-        claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-
-          # This is an optional setting that allows Claude to read CI results on PRs
         additional_permissions: |
           actions: read
 
@@ -62,3 +58,6 @@ jobs:
           # See https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md
           # or https://docs.anthropic.com/en/docs/claude-code/sdk#command-line for available options
           # claude_args: '--model claude-opus-4-1-20250805 --allowed-tools Bash(gh pr:*)'
+        anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+env:
+  ANTHROPIC_BASE_URL: ${{ secrets.ANTHROPIC_BASE_URL }}
